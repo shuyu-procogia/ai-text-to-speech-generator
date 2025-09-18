@@ -17,9 +17,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// Available voices with descriptions
+const AVAILABLE_VOICES = {
+  alloy: { name: 'Alloy', description: 'Neutral, balanced voice' },
+  echo: { name: 'Echo', description: 'Male, warm and friendly' },
+  fable: { name: 'Fable', description: 'British accent, expressive' },
+  onyx: { name: 'Onyx', description: 'Male, deep and authoritative' },
+  nova: { name: 'Nova', description: 'Female, bright and cheerful' },
+  shimmer: { name: 'Shimmer', description: 'Female, soft and gentle' }
+};
+
 // Input validation middleware
 const validateTextInput = (req, res, next) => {
-  const { text } = req.body;
+  const { text, voice } = req.body;
 
   if (!text) {
     return res.status(400).json({ error: 'Text is required' });
@@ -37,20 +47,28 @@ const validateTextInput = (req, res, next) => {
     return res.status(400).json({ error: 'Text must be less than 4000 characters' });
   }
 
+  // Validate voice parameter
+  if (voice && !AVAILABLE_VOICES[voice]) {
+    return res.status(400).json({
+      error: 'Invalid voice selection',
+      availableVoices: Object.keys(AVAILABLE_VOICES)
+    });
+  }
+
   next();
 };
 
 // Text-to-Speech API endpoint
 app.post('/api/generate-speech', validateTextInput, async (req, res) => {
   try {
-    const { text } = req.body;
+    const { text, voice = 'alloy' } = req.body;
 
-    console.log(`Generating speech for text: ${text.substring(0, 50)}...`);
+    console.log(`Generating speech for text: ${text.substring(0, 50)}... using voice: ${voice}`);
 
     // Generate speech using OpenAI TTS
     const mp3 = await openai.audio.speech.create({
       model: 'tts-1',
-      voice: 'alloy',
+      voice: voice,
       input: text,
       response_format: 'mp3',
     });
@@ -79,6 +97,11 @@ app.post('/api/generate-speech', validateTextInput, async (req, res) => {
 
     res.status(500).json({ error: 'Failed to generate speech. Please try again.' });
   }
+});
+
+// Get available voices endpoint
+app.get('/api/voices', (req, res) => {
+  res.json({ voices: AVAILABLE_VOICES });
 });
 
 // Health check endpoint

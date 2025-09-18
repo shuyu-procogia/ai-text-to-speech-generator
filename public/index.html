@@ -99,9 +99,35 @@
             margin-bottom: 24px;
         }
 
-        .voice-info {
+        .voice-label {
             font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
             color: #374151;
+        }
+
+        .voice-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            background-color: white;
+            color: #374151;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .voice-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .voice-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 8px;
         }
 
         .generate-btn {
@@ -276,7 +302,18 @@ Example: Welcome to our AI-powered text-to-speech generator. This tool converts 
 
         <!-- Voice Selection -->
         <div class="voice-section">
-            <div class="voice-info">🎤 Voice: Alloy (Natural & Clear)</div>
+            <label class="voice-label">🎤 Select Voice:</label>
+            <select id="voiceSelect" class="voice-select">
+                <option value="alloy">Alloy - Neutral, balanced voice</option>
+                <option value="echo">Echo - Male, warm and friendly</option>
+                <option value="fable">Fable - British accent, expressive</option>
+                <option value="onyx">Onyx - Male, deep and authoritative</option>
+                <option value="nova">Nova - Female, bright and cheerful</option>
+                <option value="shimmer">Shimmer - Female, soft and gentle</option>
+            </select>
+            <div id="voiceDescription" class="voice-description">
+                Neutral, balanced voice - great for all types of content
+            </div>
         </div>
 
         <!-- Generate Button -->
@@ -322,6 +359,8 @@ Example: Welcome to our AI-powered text-to-speech generator. This tool converts 
     <script>
         const textInput = document.getElementById('textInput');
         const charCounter = document.getElementById('charCounter');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const voiceDescription = document.getElementById('voiceDescription');
         const generateBtn = document.getElementById('generateBtn');
         const statusSection = document.getElementById('statusSection');
         const loadingState = document.getElementById('loadingState');
@@ -334,6 +373,22 @@ Example: Welcome to our AI-powered text-to-speech generator. This tool converts 
         const errorMessage = document.getElementById('errorMessage');
 
         let audioBlob = null;
+
+        // Voice descriptions
+        const voiceDescriptions = {
+            alloy: 'Neutral, balanced voice - great for all types of content',
+            echo: 'Male, warm and friendly - perfect for casual content',
+            fable: 'British accent, expressive - ideal for storytelling',
+            onyx: 'Male, deep and authoritative - great for professional content',
+            nova: 'Female, bright and cheerful - excellent for engaging content',
+            shimmer: 'Female, soft and gentle - perfect for calm, soothing content'
+        };
+
+        // Voice selection handler
+        voiceSelect.addEventListener('change', () => {
+            const selectedVoice = voiceSelect.value;
+            voiceDescription.textContent = voiceDescriptions[selectedVoice];
+        });
 
         // Character counter
         textInput.addEventListener('input', () => {
@@ -356,6 +411,7 @@ Example: Welcome to our AI-powered text-to-speech generator. This tool converts 
         // Generate speech
         generateBtn.addEventListener('click', async () => {
             const text = textInput.value.trim();
+            const voice = voiceSelect.value;
 
             if (text.length < 10 || text.length > 4000) {
                 showError('Text must be between 10 and 4000 characters.');
@@ -378,7 +434,7 @@ Example: Welcome to our AI-powered text-to-speech generator. This tool converts 
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ text }),
+                    body: JSON.stringify({ text, voice }),
                 });
 
                 clearInterval(progressInterval);

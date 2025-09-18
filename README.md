@@ -5,7 +5,8 @@ A simple, backend-focused web application that converts text into natural-soundi
 ## Features
 
 - **Instant Text-to-Speech**: Convert any text to high-quality MP3 audio
-- **AI-Powered Voice**: Uses OpenAI's advanced TTS model with Alloy voice
+- **Multiple AI Voices**: Choose from 6 different OpenAI TTS voices with distinct characteristics
+- **Voice Variety**: Male/female voices, different accents (British), and personality types
 - **Fast Processing**: Audio generation typically takes 10-20 seconds
 - **Direct Download**: MP3 files download automatically when ready
 - **Smart Validation**: Input validation and error handling
@@ -36,15 +37,17 @@ A simple, backend-focused web application that converts text into natural-soundi
 ## How It Works
 
 1. **Paste Text**: Enter or paste text (10-4000 characters)
-2. **Generate**: Click "Generate Speech" button
-3. **Wait**: AI processes your text (10-20 seconds)
-4. **Download**: MP3 file downloads automatically
+2. **Select Voice**: Choose from 6 AI voices (Alloy, Echo, Fable, Onyx, Nova, Shimmer)
+3. **Generate**: Click "Generate Speech" button
+4. **Wait**: AI processes your text (10-20 seconds)
+5. **Download**: MP3 file downloads automatically
 
 ## API Endpoints
 
 - `POST /api/generate-speech` - Convert text to speech
-  - Body: `{ "text": "Your text here" }`
+  - Body: `{ "text": "Your text here", "voice": "alloy" }`
   - Returns: MP3 audio file
+- `GET /api/voices` - Get available voices and descriptions
 - `GET /api/health` - Health check endpoint
 
 ## Tech Stack
@@ -52,7 +55,7 @@ A simple, backend-focused web application that converts text into natural-soundi
 - **Backend**: Node.js + Express
 - **AI Service**: OpenAI Text-to-Speech API
 - **Frontend**: Vanilla HTML/CSS/JavaScript
-- **Voice Model**: Alloy (natural & clear)
+- **Voice Models**: 6 OpenAI TTS voices (Alloy, Echo, Fable, Onyx, Nova, Shimmer)
 
 ## Project Structure
 
@@ -79,10 +82,21 @@ The app handles various error scenarios:
 - Network connectivity issues
 - Invalid API key configuration
 
+## Available Voices
+
+| Voice | Description | Gender | Accent |
+|-------|-------------|--------|---------|
+| **Alloy** | Neutral, balanced voice | Neutral | American |
+| **Echo** | Warm and friendly | Male | American |
+| **Fable** | Expressive storytelling | Neutral | British |
+| **Onyx** | Deep and authoritative | Male | American |
+| **Nova** | Bright and cheerful | Female | American |
+| **Shimmer** | Soft and gentle | Female | American |
+
 ## Next Steps
 
-This MVP demonstrates core functionality. Potential enhancements:
-- Multiple voice options
+Potential enhancements:
+- ✅ ~~Multiple voice options~~ (Completed!)
 - Audio preview player
 - Batch text processing
 - User accounts and history
